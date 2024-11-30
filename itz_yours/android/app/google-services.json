@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "146861988071",
+    "project_id": "itz-yours",
+    "storage_bucket": "itz-yours.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146861988071:android:7064e0b77cbe652f20aa42",
+        "android_client_info": {
+          "package_name": "com.example.itz_yours"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnO66euWH3Kt7yXLdOkf57g11t_I2COgs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
