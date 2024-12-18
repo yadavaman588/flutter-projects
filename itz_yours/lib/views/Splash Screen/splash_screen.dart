@@ -1,7 +1,11 @@
+import 'dart:async';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 
 import 'package:itz_yours/consts/consts.dart';
 import 'package:itz_yours/views/auth_screen/login_screen.dart';
+import 'package:itz_yours/views/home_screen/home.dart';
 import 'package:itz_yours/widgets_commo/app_logo.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +18,18 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   changeScreen() {
     Future.delayed(const Duration(seconds: 3), () {
-      Get.to(() => const LoginScreen());
+      //Get.to(() => const LoginScreen());
+      StreamSubscription<User?>? _authStateSubscription;
+
+      _authStateSubscription = auth.authStateChanges().listen((User? user) {
+        if (user == null && mounted) {
+          _authStateSubscription!.pause();
+          Get.offAll(() => const LoginScreen());
+        } else {
+          _authStateSubscription!.pause();
+          Get.offAll(() => const Home());
+        }
+      });
     });
   }
 

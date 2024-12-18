@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:itz_yours/consts/consts.dart';
 import 'package:itz_yours/controllers/home_controller.dart';
+import 'package:itz_yours/views/auth_screen/login_screen.dart';
 import 'package:itz_yours/views/cart_screen/cart_screen.dart';
 import 'package:itz_yours/views/category_screen/category_screen.dart';
 import 'package:itz_yours/views/home_screen/home_screen.dart';

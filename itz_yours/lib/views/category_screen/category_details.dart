@@ -1,7 +1,5 @@
 import 'package:get/get.dart';
 import 'package:itz_yours/consts/consts.dart';
-import 'package:itz_yours/controllers/home_controller.dart';
-import 'package:itz_yours/views/category_screen/category_screen.dart';
 import 'package:itz_yours/views/category_screen/item_details.dart';
 import 'package:itz_yours/widgets_commo/bg_widget.dart';
 
@@ -17,7 +15,7 @@ class CategoryDetails extends StatelessWidget {
         title: title!.text.fontFamily(bold).white.make(),
       ),
       body: Container(
-        padding: EdgeInsets.all(12),
+        padding: const EdgeInsets.all(12),
         child: Column(
           children: [
             SingleChildScrollView(

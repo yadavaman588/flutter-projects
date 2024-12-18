@@ -11,6 +11,8 @@ const nameHint = "hint";
 const forgotPass = "Forgot Password";
 const login = "Log in";
 const logout = "Log Out";
+const loggedin = "Login Successfull";
+const loggedout = "Logout Successfull";
 const signup = "Sign Up";
 const createNewAccount = "or, create a new account";
 const loginWith = "Login With";
@@ -70,3 +72,7 @@ const itemDetailButtonList = [
 
 // profile strings
 const wishlist = "My WishList", orders = "My orders", message = "Messages";
+
+//edit profile strings
+const oldpassword = 'Old Password';
+const newpassword = 'New Password';
