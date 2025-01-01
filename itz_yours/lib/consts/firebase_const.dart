@@ -7,3 +7,5 @@ User? currentuser = auth.currentUser;
 
 //collections
 const usersCollection = "users";
+const productsCollection = "products";
+const cartCollection = "cart";

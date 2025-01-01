@@ -6,6 +6,7 @@ import 'package:itz_yours/views/cart_screen/cart_screen.dart';
 import 'package:itz_yours/views/category_screen/category_screen.dart';
 import 'package:itz_yours/views/home_screen/home_screen.dart';
 import 'package:itz_yours/views/profile_screen/profile_screen.dart';
+import 'package:itz_yours/widgets_commo/exit_dialog.dart';
 
 class Home extends StatelessWidget {
   const Home({super.key});
@@ -32,24 +33,33 @@ class Home extends StatelessWidget {
       const ProfileScreen()
     ];
 
-    return Scaffold(
-      body: Column(
-        children: [
-          Obx(() => Expanded(
-              child: navBody.elementAt(controller.currentNavIndex.value))),
-        ],
-      ),
-      bottomNavigationBar: Obx(
-        () => BottomNavigationBar(
-          currentIndex: controller.currentNavIndex.value,
-          selectedItemColor: redColor,
-          selectedLabelStyle: const TextStyle(fontFamily: semibold),
-          items: navBarItem,
-          backgroundColor: whiteColor,
-          type: BottomNavigationBarType.fixed,
-          onTap: (value) {
-            controller.currentNavIndex.value = value;
-          },
+    return WillPopScope(
+      onWillPop: () async {
+        showDialog(
+            barrierDismissible: false,
+            context: context,
+            builder: (context) => exitDialog(context));
+        return false;
+      },
+      child: Scaffold(
+        body: Column(
+          children: [
+            Obx(() => Expanded(
+                child: navBody.elementAt(controller.currentNavIndex.value))),
+          ],
+        ),
+        bottomNavigationBar: Obx(
+          () => BottomNavigationBar(
+            currentIndex: controller.currentNavIndex.value,
+            selectedItemColor: redColor,
+            selectedLabelStyle: const TextStyle(fontFamily: semibold),
+            items: navBarItem,
+            backgroundColor: whiteColor,
+            type: BottomNavigationBarType.fixed,
+            onTap: (value) {
+              controller.currentNavIndex.value = value;
+            },
+          ),
         ),
       ),
     );

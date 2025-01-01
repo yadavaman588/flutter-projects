@@ -92,17 +92,27 @@ class EditProfileScreen extends StatelessWidget {
 
                             if (data['password'] ==
                                 controller.oldpassController.text) {
-                              await controller.changeAuthPassword(
-                                email: currentuser!.email,
-                                password: controller.oldpassController.text,
-                                newpassword: controller.newpassController.text,
-                              );
-                              await controller.updateProfile(
-                                  imgUrl: controller.profielImageLink,
-                                  name: controller.nameController.text,
-                                  password: controller.newpassController.text);
+                              if (controller.newpassController.text.length <
+                                  6) {
+                                VxToast.show(context,
+                                    msg:
+                                        "Minimum 6 Characters is required for password");
+                                controller.isLoading(false);
+                              } else {
+                                await controller.changeAuthPassword(
+                                  email: currentuser!.email,
+                                  password: controller.oldpassController.text,
+                                  newpassword:
+                                      controller.newpassController.text,
+                                );
+                                await controller.updateProfile(
+                                    imgUrl: controller.profielImageLink,
+                                    name: controller.nameController.text,
+                                    password:
+                                        controller.newpassController.text);
 
-                              VxToast.show(context, msg: "Updated");
+                                VxToast.show(context, msg: "Updated");
+                              }
                             } else {
                               VxToast.show(context,
                                   msg: "The old password is wrong");
