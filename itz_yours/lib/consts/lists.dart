@@ -37,3 +37,6 @@ const categoryImages = [
 
 const profileButtonList = [orders, wishlist, message];
 const profileButtonIcons = [icOrders, icOrders, icMessages];
+
+const paymentMethodsListImg = [imgPaypal, imgPaytm, imgCod];
+const paymentMethods = [paypal, paytm, cod];

@@ -29,4 +29,14 @@ class FirestoreServices {
   static deletedocument(docid) {
     return firestore.collection(cartCollection).doc(docid).delete();
   }
+
+//get all chat messages
+  static getChatMessages(docId) {
+    return firestore
+        .collection(chatsCollection)
+        .doc(docId)
+        .collection(messagesCollection)
+        .orderBy('created_on', descending: false)
+        .snapshots();
+  }
 }

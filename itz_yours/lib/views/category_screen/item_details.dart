@@ -1,6 +1,7 @@
 import 'package:get/get.dart';
 import 'package:itz_yours/consts/consts.dart';
 import 'package:itz_yours/controllers/product_controller.dart';
+import 'package:itz_yours/views/chat_screen/chat_screen.dart';
 import 'package:itz_yours/widgets_commo/our_button.dart';
 
 class ItemDetails extends StatelessWidget {
@@ -28,8 +29,20 @@ class ItemDetails extends StatelessWidget {
           title: title!.text.color(darkFontGrey).fontFamily(bold).make(),
           actions: [
             IconButton(onPressed: () {}, icon: const Icon(Icons.share)),
-            IconButton(
-                onPressed: () {}, icon: const Icon(Icons.favorite_outline)),
+            Obx(
+              () => IconButton(
+                onPressed: () {
+                  if (controller.isFav.value) {
+                    controller.removeFromWishlist(data.id);
+                  } else {
+                    controller.addToWishlist(data.id);
+                  }
+                },
+                icon: const Icon(Icons.favorite_outlined),
+                color: controller.isFav.value ? redColor : darkFontGrey,
+                // Icon // IconButton
+              ),
+            ),
           ],
         ),
         body: Column(
@@ -105,7 +118,12 @@ class ItemDetails extends StatelessWidget {
                             Icons.message_rounded,
                             color: darkFontGrey,
                           ),
-                        ),
+                        ).onTap(() {
+                          Get.to(
+                            () => const ChatScreen(),
+                            arguments: [data['p_seller'], data['vendor_id']],
+                          );
+                        }),
                       ],
                     )
                         .box

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:itz_yours/consts/consts.dart';
 import 'package:itz_yours/controllers/cart_controller.dart';
 import 'package:itz_yours/services/firestore_services.dart';
+import 'package:itz_yours/views/cart_screen/placeorder_screen.dart';
 import 'package:itz_yours/widgets_commo/our_button.dart';
 
 class CartScreen extends StatelessWidget {
@@ -38,6 +39,7 @@ class CartScreen extends StatelessWidget {
             } else {
               var data = snapshot.data!.docs;
               controller.calculate(data);
+              controller.productSnapshot = data;
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -99,7 +101,9 @@ class CartScreen extends StatelessWidget {
                         width: context.screenWidth - 60,
                         child: ourButton(
                             color: redColor,
-                            onPress: () {},
+                            onPress: () {
+                              Get.to(const PlaceorderScreen());
+                            },
                             textColor: whiteColor,
                             title: "Place order"))
                   ],

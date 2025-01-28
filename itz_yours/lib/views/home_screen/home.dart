@@ -42,11 +42,14 @@ class Home extends StatelessWidget {
         return false;
       },
       child: Scaffold(
-        body: Column(
-          children: [
-            Obx(() => Expanded(
-                child: navBody.elementAt(controller.currentNavIndex.value))),
-          ],
+        body: PageView(
+          controller:
+              controller.pageController, // Use the controller's PageController
+          onPageChanged: (index) {
+            controller.currentNavIndex.value =
+                index; // Update the index when the page is swiped
+          },
+          children: navBody,
         ),
         bottomNavigationBar: Obx(
           () => BottomNavigationBar(
@@ -58,6 +61,7 @@ class Home extends StatelessWidget {
             type: BottomNavigationBarType.fixed,
             onTap: (value) {
               controller.currentNavIndex.value = value;
+              controller.pageController.jumpToPage(value);
             },
           ),
         ),

@@ -76,3 +76,6 @@ const wishlist = "My WishList", orders = "My orders", message = "Messages";
 //edit profile strings
 const oldpassword = 'Old Password';
 const newpassword = 'New Password';
+
+//payment method strings
+const paypal = "Paypal", paytm = "Paytm", cod = "Cash on delivery";
