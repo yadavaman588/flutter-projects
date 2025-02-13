@@ -12,6 +12,7 @@ class CartController extends GetxController {
   var postalcodeController = TextEditingController();
   var phoneController = TextEditingController();
   var paymentIndex = 0.obs;
+  var placingOrder = false.obs;
 
   late dynamic productSnapshot;
   var products = [];
@@ -21,6 +22,7 @@ class CartController extends GetxController {
   }
 
   placeMyOrder({required orderPaymentMethod, required totalAmount}) async {
+    placingOrder(true);
     await getProductDetails();
     await firestore.collection(ordersCollection).doc().set({
       'order_id': 56456464,
@@ -28,6 +30,7 @@ class CartController extends GetxController {
       'order_by': currentuser!.uid,
       'order_by_name': Get.find<HomeController>().username,
       'order_by_email': currentuser!.email,
+      'order_by_state': stateController.text,
       'order_by_address': addressController.text,
       'order_by_city': cityController.text,
       'order_by_phone': phoneController.text,
@@ -41,6 +44,13 @@ class CartController extends GetxController {
       'total_amount': totalAmount,
       'orders': FieldValue.arrayUnion(products),
     });
+    placingOrder(false);
+  }
+
+  clearCart() {
+    for (var i = 0; i < productSnapshot.length; i++) {
+      firestore.collection(cartCollection).doc(productSnapshot[i].id).delete();
+    }
   }
 
   getProductDetails() {
@@ -49,6 +59,8 @@ class CartController extends GetxController {
       products.add({
         'color': productSnapshot[i]['color'],
         'img': productSnapshot[i]['img'],
+        'vendor_id': productSnapshot[i]['vendor_id'],
+        'tprice': productSnapshot[i]['tprice'],
         'qty': productSnapshot[i]['qty'],
         'title': productSnapshot[i]['title'],
       });

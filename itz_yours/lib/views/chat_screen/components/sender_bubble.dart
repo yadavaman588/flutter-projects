@@ -13,16 +13,28 @@ Widget senderBubble(DocumentSnapshot data) {
       padding: const EdgeInsets.all(10),
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-          color: data['uid'] == currentuser!.uid ? redColor : darkFontGrey,
-          borderRadius: const BorderRadius.only(
-              topLeft: Radius.circular(20),
-              topRight: Radius.circular(20),
-              bottomLeft: Radius.circular(20))),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        "${data['msg']}".text.white.size(16).make(),
-        10.heightBox,
-        time.text.color(whiteColor.withOpacity(0.5)).make()
-      ]),
+        color: data['uid'] == currentuser!.uid ? redColor : darkFontGrey,
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(20),
+          topRight: Radius.circular(20),
+          bottomLeft: Radius.circular(20),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Directionality(
+            textDirection: TextDirection.ltr, // Ensures proper symbol placement
+            child: "${data['msg']}".text.white.size(16).make(),
+          ),
+          10.heightBox,
+          Directionality(
+            textDirection:
+                TextDirection.ltr, // Ensures timestamp is correct too
+            child: time.text.color(whiteColor.withOpacity(0.5)).make(),
+          ),
+        ],
+      ),
     ),
   );
 }

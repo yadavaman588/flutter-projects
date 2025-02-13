@@ -19,6 +19,13 @@ class FirestoreServices {
         .snapshots();
   }
 
+  static getSubCategoryProducts(title) {
+    return firestore
+        .collection(productsCollection)
+        .where('p_subcategory', isEqualTo: title)
+        .snapshots();
+  }
+
   static getCart(uid) {
     return firestore
         .collection(cartCollection)
@@ -38,5 +45,68 @@ class FirestoreServices {
         .collection(messagesCollection)
         .orderBy('created_on', descending: false)
         .snapshots();
+  }
+
+  static getAllOrders() {
+    return firestore
+        .collection(ordersCollection)
+        .where('order_by', isEqualTo: currentuser!.uid)
+        .snapshots();
+  }
+
+  static getWishlist() {
+    return firestore
+        .collection(productsCollection)
+        .where('p_wishlist', arrayContains: currentuser!.uid)
+        .snapshots();
+  }
+
+  static getAllMessages() {
+    return firestore
+        .collection(chatsCollection)
+        .where('fromId', isEqualTo: currentuser!.uid)
+        .snapshots();
+  }
+
+  static getCounts() async {
+    var res = await Future.wait([
+      firestore
+          .collection(cartCollection)
+          .where('added_by', isEqualTo: currentuser!.uid)
+          .get()
+          .then((value) {
+        return value.docs.length;
+      }),
+      firestore
+          .collection(productsCollection)
+          .where('p_wishlist', arrayContains: currentuser!.uid)
+          .get()
+          .then((value) {
+        return value.docs.length;
+      }),
+      firestore
+          .collection(ordersCollection)
+          .where('order_by', isEqualTo: currentuser!.uid)
+          .get()
+          .then((value) {
+        return value.docs.length;
+      })
+    ]);
+    return res;
+  }
+
+  static getAllPrducts() {
+    return firestore.collection(productsCollection).snapshots();
+  }
+
+  static getFeaturedProduct() {
+    return firestore
+        .collection(productsCollection)
+        .where('is_featured', isEqualTo: true)
+        .get();
+  }
+
+  static searchProducts(title) {
+    return firestore.collection(productsCollection).get();
   }
 }

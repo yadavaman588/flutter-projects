@@ -1,13 +1,27 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:get/get.dart';
 import 'package:itz_yours/consts/consts.dart';
 import 'package:itz_yours/consts/lists.dart';
+import 'package:itz_yours/controllers/home_controller.dart';
+import 'package:itz_yours/controllers/product_controller.dart';
+import 'package:itz_yours/services/firestore_services.dart';
+import 'package:itz_yours/views/category_screen/item_details.dart';
 import 'package:itz_yours/views/home_screen/components/featured_button.dart';
+import 'package:itz_yours/views/home_screen/search_scree.dart';
 import 'package:itz_yours/widgets_commo/home_buttons.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  @override
   Widget build(BuildContext context) {
+    var controller = Get.find<HomeController>();
+    var pController = Get.put(ProductController());
     return Container(
       padding: const EdgeInsets.all(12),
       color: lightGrey,
@@ -20,13 +34,20 @@ class HomeScreen extends StatelessWidget {
             height: 60,
             color: lightGrey,
             child: TextFormField(
-              decoration: const InputDecoration(
+              controller: controller.searchController,
+              decoration: InputDecoration(
                 border: InputBorder.none,
-                suffixIcon: Icon(Icons.search),
+                suffixIcon: const Icon(Icons.search).onTap(() {
+                  if (controller.searchController.text.isNotEmptyAndNotNull) {
+                    Get.to(() => SearchScreen(
+                          title: controller.searchController.text,
+                        ));
+                  }
+                }),
                 fillColor: whiteColor,
                 filled: true,
                 hintText: searchAnything,
-                hintStyle: TextStyle(color: textfieldGrey),
+                hintStyle: const TextStyle(color: textfieldGrey),
               ),
             ),
           ),
@@ -128,12 +149,14 @@ class HomeScreen extends StatelessWidget {
                             (index) => Column(
                                   children: [
                                     featuredButton(
-                                        icon: featuredImages1[index],
-                                        title: featuredTitles1[index]),
+                                      icon: featuredImages1[index],
+                                      title: featuredTitles1[index],
+                                    ),
                                     10.heightBox,
                                     featuredButton(
-                                        icon: featuredImages2[index],
-                                        title: featuredTitles2[index]),
+                                      icon: featuredImages2[index],
+                                      title: featuredTitles2[index],
+                                    ),
                                   ],
                                 )).toList()),
                   ),
@@ -142,7 +165,10 @@ class HomeScreen extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.all(12),
                     width: double.infinity,
-                    decoration: const BoxDecoration(color: redColor),
+                    decoration: const BoxDecoration(
+                      color: Colors.red,
+                      borderRadius: BorderRadius.all(Radius.circular(8)),
+                    ),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -153,41 +179,77 @@ class HomeScreen extends StatelessWidget {
                           10.heightBox,
                           SingleChildScrollView(
                             scrollDirection: Axis.horizontal,
-                            child: Row(
-                              children: List.generate(
-                                  6,
-                                  (index) => Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Image.asset(
-                                            imgP1,
-                                            width: 150,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          10.heightBox,
-                                          "Laptop 4gb/64gb"
-                                              .text
-                                              .fontFamily(semibold)
-                                              .color(darkFontGrey)
-                                              .make(),
-                                          10.heightBox,
-                                          "\$600"
-                                              .text
-                                              .color(redColor)
-                                              .fontFamily(bold)
-                                              .size(16)
-                                              .make()
-                                        ],
-                                      )
-                                          .box
-                                          .margin(const EdgeInsets.symmetric(
-                                              horizontal: 4))
-                                          .white
-                                          .rounded
-                                          .padding(const EdgeInsets.all(8))
-                                          .make()),
-                            ),
+                            child: FutureBuilder(
+                                future: FirestoreServices.getFeaturedProduct(),
+                                builder: (context,
+                                    AsyncSnapshot<QuerySnapshot> snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return const Center(
+                                        child: CircularProgressIndicator(
+                                      valueColor:
+                                          AlwaysStoppedAnimation(redColor),
+                                    ));
+                                  } else if (snapshot.data!.docs.isEmpty) {
+                                    return "No featured Products"
+                                        .text
+                                        .white
+                                        .makeCentered();
+                                  } else {
+                                    var featuredData = snapshot.data!.docs;
+                                    return Row(
+                                      children: List.generate(
+                                          featuredData.length,
+                                          (index) => Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Image.network(
+                                                    featuredData[index]
+                                                        ['p_imgs'][0],
+                                                    width: 130,
+                                                    height: 130,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  10.heightBox,
+                                                  "${featuredData[index]['p_name']}"
+                                                      .text
+                                                      .fontFamily(semibold)
+                                                      .color(darkFontGrey)
+                                                      .make(),
+                                                  10.heightBox,
+                                                  "${featuredData[index]['p_price']}"
+                                                      .numCurrency
+                                                      .text
+                                                      .color(redColor)
+                                                      .fontFamily(bold)
+                                                      .size(16)
+                                                      .make()
+                                                ],
+                                              )
+                                                  .box
+                                                  .margin(const EdgeInsets
+                                                      .symmetric(horizontal: 4))
+                                                  .white
+                                                  .rounded
+                                                  .padding(
+                                                      const EdgeInsets.all(8))
+                                                  .make()
+                                                  .onTap(
+                                                () async {
+                                                  await pController.checkIfFav(
+                                                      featuredData[index]);
+                                                  Get.to(() => ItemDetails(
+                                                        title:
+                                                            "${featuredData[index]['p_name']}",
+                                                        data:
+                                                            featuredData[index],
+                                                      ));
+                                                  setState(() {});
+                                                },
+                                              )),
+                                    );
+                                  }
+                                }),
                           )
                         ]),
                   ),
@@ -211,49 +273,77 @@ class HomeScreen extends StatelessWidget {
                       }),
 
                   20.heightBox,
-                  GridView.builder(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemCount: 6,
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: 8,
-                              crossAxisSpacing: 8,
-                              mainAxisExtent: 300),
-                      itemBuilder: (context, index) {
-                        return Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Image.asset(
-                              imgP5,
-                              width: 200,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                            const Spacer(),
-                            10.heightBox,
-                            "Laptop 4gb/64gb"
-                                .text
-                                .fontFamily(semibold)
-                                .color(darkFontGrey)
-                                .make(),
-                            10.heightBox,
-                            "\$600"
-                                .text
-                                .color(redColor)
-                                .fontFamily(bold)
-                                .size(16)
-                                .make()
-                          ],
-                        )
-                            .box
-                            .margin(const EdgeInsets.symmetric(horizontal: 4))
-                            .white
-                            .rounded
-                            .padding(const EdgeInsets.all(12))
-                            .make();
-                      })
+                  StreamBuilder(
+                    stream: FirestoreServices.getAllPrducts(),
+                    builder: (BuildContext context,
+                        AsyncSnapshot<QuerySnapshot> snapshot) {
+                      if (!snapshot.hasData) {
+                        return const Center(
+                            child: CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation(redColor),
+                        ));
+                      } else {
+                        var allproductsData = snapshot.data!.docs;
+                        return GridView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            itemCount: allproductsData.length,
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 2,
+                                    mainAxisSpacing: 8,
+                                    crossAxisSpacing: 8,
+                                    mainAxisExtent: 300),
+                            itemBuilder: (context, index) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Image.network(
+                                    allproductsData[index]['p_imgs'][0],
+                                    width: 200,
+                                    height: 200,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  const Spacer(),
+                                  10.heightBox,
+                                  "${allproductsData[index]['p_name']}"
+                                      .text
+                                      .fontFamily(semibold)
+                                      .color(darkFontGrey)
+                                      .make(),
+                                  10.heightBox,
+                                  "${allproductsData[index]['p_price']}"
+                                      .numCurrency
+                                      .text
+                                      .color(redColor)
+                                      .fontFamily(bold)
+                                      .size(16)
+                                      .make()
+                                ],
+                              )
+                                  .box
+                                  .margin(
+                                      const EdgeInsets.symmetric(horizontal: 4))
+                                  .white
+                                  .rounded
+                                  .padding(const EdgeInsets.all(12))
+                                  .make()
+                                  .onTap(
+                                () {
+                                  pController
+                                      .checkIfFav(allproductsData[index]);
+                                  Get.to(() => ItemDetails(
+                                        title:
+                                            "${allproductsData[index]['p_name']}",
+                                        data: allproductsData[index],
+                                      ));
+                                  setState(() {});
+                                },
+                              );
+                            });
+                      }
+                    },
+                  )
                 ],
               ),
             ),

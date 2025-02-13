@@ -3,6 +3,7 @@ import 'package:itz_yours/consts/consts.dart';
 
 class HomeController extends GetxController {
   late PageController pageController;
+  var searchController = TextEditingController();
   @override
   void onInit() {
     getUsername();
