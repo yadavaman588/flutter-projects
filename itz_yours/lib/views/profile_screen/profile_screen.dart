@@ -72,8 +72,8 @@ class ProfileScreen extends StatelessWidget {
                                       .roundedFull
                                       .clip(Clip.antiAlias)
                                       .make()
-                                  : Image.network(
-                                      data['imageUrl'],
+                                  : Image.asset(
+                                      imgProfile3,
                                       height: 70,
                                       width: 80,
                                       fit: BoxFit.cover,
@@ -82,7 +82,18 @@ class ProfileScreen extends StatelessWidget {
                                       .roundedFull
                                       .clip(Clip.antiAlias)
                                       .make(),
-                              10.widthBox,
+                              10.widthBox
+                              /*Image.network(
+                                      data['imageUrl'],
+                                      height: 70,
+                                      width: 80,
+                                      fit: BoxFit.cover,
+                                    )
+                                      .box
+                                      .roundedFull
+                                      .clip(Clip.antiAlias)
+                                      .make(),*/
+                              ,
                               Expanded(
                                   child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
