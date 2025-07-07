@@ -91,19 +91,22 @@ class _DestinationLocationState extends State<DestinationLocation> {
                   return Column(
                     children: [
                       ListTile(
-                        title: Text(listOfLocation[index]["description"],
-                            style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black)),
+                        title: Text(
+                          listOfLocation[index]["display_name"] ?? '',
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black,
+                          ),
+                        ),
                         onTap: () {
-                          // Handle the tap event
                           setState(() {
                             searchController.text =
-                                listOfLocation[index]["description"];
+                                listOfLocation[index]["display_name"] ?? '';
                           });
                         },
                       ),
+
                       if (index != listOfLocation.length - 1)
                         const Divider(), // Add a divider between items except the last one
                     ],

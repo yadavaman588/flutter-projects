@@ -1,23 +1,22 @@
 import 'package:destiny/components/location_service.dart';
 import 'package:destiny/controllers/data_controller.dart';
-import 'package:destiny/views/publish_ride.dart';
-import 'package:destiny/views/publish_screen.dart';
+import 'package:destiny/views/home_screen/home.dart';
+import 'package:destiny/views/publish_ride/publish_final.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:uuid/uuid.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-class PublishFinal extends StatefulWidget {
-  const PublishFinal({super.key});
+class Publishscreen extends StatefulWidget {
+  const Publishscreen({super.key});
 
   @override
-  State<PublishFinal> createState() => _PublishFinalState();
+  State<Publishscreen> createState() => _PublishscreenState();
 }
 
-class _PublishFinalState extends State<PublishFinal> {
-  DateTime? pickedDate;
+class _PublishscreenState extends State<Publishscreen> {
   var dataController = Get.put(DataController());
+
   final TextEditingController searchController = TextEditingController();
   final FocusNode searchFocusNode = FocusNode(); // FocusNode for the SearchBar
   bool isLoading = false;
@@ -82,7 +81,11 @@ class _PublishFinalState extends State<PublishFinal> {
           textInputAction: TextInputAction.done,
           controller: searchController,
           focusNode: searchFocusNode, // Assign FocusNode
-          leading: const BackButton(),
+          leading: BackButton(
+            onPressed: () {
+              Get.offAll(() => const Home());
+            },
+          ),
 
           backgroundColor: const WidgetStatePropertyAll(Colors.white),
           hintText: hint,
@@ -116,17 +119,14 @@ class _PublishFinalState extends State<PublishFinal> {
 
   @override
   Widget build(BuildContext context) {
-    DateTime? today = DateTime.now();
-    DateTime? lastDate = today.add(const Duration(days: 35));
-    print(dataController.sharedMap['destination']);
     return Scaffold(
-        backgroundColor: Colors.white, // Sets the background color to white
+        backgroundColor: Colors.white,
         body: Container(
             width: context.screenWidth,
             color: Colors.white,
             child: Column(children: [
               const SizedBox(height: 30),
-              searchBar("Pickup?"),
+              searchBar("Where are you Going?"),
               Visibility(
                 visible: searchController.text.isNotEmpty,
                 child: Expanded(
@@ -136,16 +136,20 @@ class _PublishFinalState extends State<PublishFinal> {
                       return Column(
                         children: [
                           ListTile(
-                            title: Text(listOfLocation[index]["description"],
-                                style: const TextStyle(
-                                    fontSize: 17,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black)),
+                            title: Text(
+                              listOfLocation[index]["display_name"] ?? '',
+                              style: const TextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            ),
                             onTap: () {
                               _onLocationSelected(
-                                  listOfLocation[index]["description"]);
+                                  listOfLocation[index]["display_name"] ?? '');
                             },
                           ),
+
                           if (index != listOfLocation.length - 1)
                             const Divider(), // Add a divider between items except the last one
                         ],
@@ -170,48 +174,9 @@ class _PublishFinalState extends State<PublishFinal> {
                       )
                     ],
                   ),
-                ).onTap(() async {
-                  dataController.addData('pickup', searchController.text);
-                  DateTime? selectedDate = await showDatePicker(
-                    initialEntryMode: DatePickerEntryMode.calendarOnly,
-                    context: context,
-                    initialDate: pickedDate ?? DateTime.now(),
-                    firstDate: DateTime.now(),
-                    lastDate: lastDate,
-                  );
-
-                  if (selectedDate != null) {
-                    // Time Picker
-                    TimeOfDay? selectedTime = await showTimePicker(
-                      context: context,
-                      initialTime: TimeOfDay.now(),
-                    );
-
-                    if (selectedTime != null) {
-                      // Combine DateTime and TimeOfDay
-                      DateTime combinedDateTime = DateTime(
-                        selectedDate.year,
-                        selectedDate.month,
-                        selectedDate.day,
-                        selectedTime.hour,
-                        selectedTime.minute,
-                      );
-
-                      // Format the date and time
-                      String formattedDate =
-                          DateFormat('yyyy-MM-dd').format(combinedDateTime);
-                      String formattedTime =
-                          DateFormat('HH:mm').format(combinedDateTime);
-
-                      dataController.addData('depart_date', formattedDate);
-                      dataController.addData('depart_time', formattedTime);
-                    }
-                  }
-                  print(dataController.sharedMap['pickup']);
-                  print(dataController.sharedMap['depart_time']);
-                  print(dataController.sharedMap['depart_date']);
-
-                  Get.to(PublishRide());
+                ).onTap(() {
+                  dataController.addData('destination', searchController.text);
+                  Get.to(const PublishFinal());
                 }),
               ),
             ])));

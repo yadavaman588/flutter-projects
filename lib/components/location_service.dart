@@ -53,9 +53,41 @@ class LocationService {
     }
   }
 
-  final String apiKey = "AIzaSyAaPwZtN4MELZaWBqSTDbylo_OtPBZ2GIs";
-
   Future<List<dynamic>> fetchPlaceSuggestions(
+      String input, String sessionToken) async {
+    try {
+      // Nominatim endpoint (sessionToken not used here, but kept for compatibility)
+      String baseUrl = 'https://nominatim.openstreetmap.org/search';
+      String requestUrl =
+          '$baseUrl?q=$input&format=json&addressdetails=1&limit=5';
+
+      var response = await http.get(
+        Uri.parse(requestUrl),
+        headers: {'User-Agent': 'Flutter App'},
+      );
+
+      if (response.statusCode == 200) {
+        var data = json.decode(response.body);
+        if (kDebugMode) {
+          print(data);
+        }
+
+        // Nominatim returns a list directly (no 'predictions' field)
+        return data;
+      } else {
+        throw Exception('Failed to load place suggestions');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        print("Error fetching place suggestions: ${e.toString()}");
+      }
+      return [];
+    }
+  }
+
+  // final String apiKey = "AIzaSyAaPwZtN4MELZaWBqSTDbylo_OtPBZ2GIs";
+
+  /* Future<List<dynamic>> fetchPlaceSuggestions(
       String input, String sessionToken) async {
     try {
       String baseUrl =
@@ -79,5 +111,5 @@ class LocationService {
       }
       return [];
     }
-  }
+  }*/
 }

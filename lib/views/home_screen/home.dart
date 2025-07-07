@@ -4,7 +4,7 @@ import 'package:destiny/views/home_screen/home_screen.dart';
 import 'package:destiny/views/inbox_screen.dart';
 import 'package:destiny/views/myrides_screen.dart';
 import 'package:destiny/views/profile_screen.dart';
-import 'package:destiny/views/publish_screen.dart';
+import 'package:destiny/views/publish_ride/publish_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

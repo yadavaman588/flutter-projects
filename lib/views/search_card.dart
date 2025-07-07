@@ -11,12 +11,12 @@ class SearchCard extends StatelessWidget {
 
   const SearchCard(
       {super.key,
-      this.time1,
-      this.time2,
-      this.city1,
-      this.city2,
-      this.price,
-      this.owner});
+      required this.time1,
+      required this.time2,
+      required this.city1,
+      required this.city2,
+      required this.price,
+      required this.owner});
 
   @override
   Widget build(BuildContext context) {
