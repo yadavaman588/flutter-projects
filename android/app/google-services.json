@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "176003536980",
+    "project_id": "destiny-25427",
+    "storage_bucket": "destiny-25427.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:176003536980:android:acab987a4735a45b68f5c1",
+        "android_client_info": {
+          "package_name": "com.example.destiny"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAaexZBnJpxmpubwlG4GA3uf8GNSj3vyZg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
